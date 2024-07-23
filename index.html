@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.5.6/jsoneditor.min.css" rel="stylesheet" type="text/css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/codemirror.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="nestor-index.css" media="screen" rel="stylesheet" type="text/css"/>
+        <title>
+            Contesting dialogue demo
+        </title>
+    </head>
+
+
+    <body onload="loadPage(true)">
+
+
+        <div id="nestorOverlay">
+            <div id="loader"></div>
+            <div id="textOverlay">Establishing connection to Prudens Web Service...</div>
+        </div>
+
+
+        <div style="display:none;" id="nestorPageContent" class="animate-bottom">
+
+            <div class="header">
+                <div id="headerTextNESTOR" class="headerText">Contesting dialogue formalization prototype</div>
+            </div>
+
+            <div class="topnav">
+                <a class="active" href="index.html">Home</a>
+                <a href="docs.html">About</a>
+            </div>
+
+            <div class="row">
+                <div class="column left">
+                    <div class="onTopHorizontalContainer">
+                        <div  id="nlAdviceLabel" for="nlAdvice" class="textarea-label">
+                            Natural Language Dialogue
+                        </div>
+                        <div class="actionButtonsHorizontallyEnd">
+                            <i class="actionCommandIcon fa fa-solid fa-close transparent"></i>
+                        </div>
+                    </div>
+                    <textarea id="nlAdvice" class="textarea" readonly></textarea>
+                    <div  id="inferredNLConclusionsLabel" for="inferredNLConclusions" class="textarea-label">
+                        Natural Language Conclusions
+                    </div>
+                    <textarea id="inferredNLConclusions" class="textarea" readonly></textarea>
+                </div>
+            
+                <div class="column middle">
+                    <div class="flexCenteredContainer">
+                        <div class="actionButtonsHorizontallyCenter">
+                            <i class="actionCommandIcon fa fa-solid fa-gear tooltip" onclick="openPopup('translationSettingsPopup', editTranslationSettings)" style="display: none;">
+                                <span class="tooltiptext">Translation Settings</span>
+                            </i>
+                            <i class="actionCommandIcon fa fa-solid fa-pencil tooltip" onclick="openPopup('editTranslationPolicyPopup', editTranslationPolicy)" style="display: none;">
+                                <span class="tooltiptext">Edit Translation Policy</span>
+                            </i>
+                            <i class="actionCommandIcon fa fa-brands fa-github tooltip" onclick="window.open('https://github.com/orgs/nestor-system/repositories')" style="display: none;">
+                                <span class="tooltiptext">NESTOR GitHub Repositories</span>
+                            </i>
+                        </div>
+                    </div>
+                    <div class="flexCenteredContainer">
+                        <div class="actionButtonsVertically">
+                            <i id="animGenerate" class="actionCommandIcon fa fa-circle-o-notch fa-spin transparent" style="color: #1f74ad"></i>
+                            <div class="actionCommandIcon" id="nextButton" onclick="getNextArgument()" style="font-size: 20px">
+                                Next Argument
+                            </div>
+                            <i class="actionCommandIcon fa fa-solid fa-bolt tooltip" onclick="openPopup('editTranslationPolicyPopup', inferConclusion)" style="display: none; font-size: 20px">
+                                <span class="tooltiptext">Infer Conclusion</span>
+                            </i>
+                            <div class="actionCommandIcon" onclick="loadPage(false)" style="font-size: 20px">
+                                Reset Dialogue
+                            </div>
+                            <i class="actionCommandIcon fa fa-circle-o-notch fa-spin transparent" style="color: #1f74ad"></i>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="column right">
+                    <div class="onTopHorizontalContainer">
+                        <div  id="generatedLogicLabel" for="generatedLogic" class="textarea-label">
+                            Prudens Formal Dialogue
+                        </div>
+                        <div class="actionButtonsHorizontallyEnd">
+                            <i class="actionCommandIcon fa fa-solid fa-close transparent"></i>
+                        </div>
+                    </div>
+                    <textarea id="generatedLogic" class="textarea"></textarea>
+                    <div class="onTopHorizontalContainer">
+                        <div  id="inferredFormalConclusionsLabel" for="inferredFormalConclusions" class="textarea-label">
+                            Prudens Formal Conclusions
+                        </div>
+                        <div class="actionButtonsHorizontallyEnd">
+                            <i id="btnViewSystemOutput" class="actionCommandIcon fa fa-solid fa-eye tooltip transparent" onclick="openPopup('systemOutputPopup', viewSystemOutput)">
+                                <span class="tooltiptext">View System Output</span>
+                            </i>
+                        </div>
+                    </div>
+                    <textarea id="inferredFormalConclusions" class="textarea"></textarea>
+                </div>
+            </div>
+        
+            <div class="footer">
+                <div id="consoleNESTOR" class="footerText"></div>
+            </div>
+
+            <div class="nestorPopup" id="editTranslationPolicyPopup">
+                <div class="popupContainer">
+                    <div class="onTopHorizontalContainer">
+                        <div id="translationPolicyLabel" for="translationPolicy" class="textarea-label">
+                            Prudens Conclusions
+                        </div>
+                        <div class="actionButtonsHorizontallyEnd">
+                            <i class="actionIcon fa fa-solid fa-eraser tooltip" onclick="clearTranslationPolicy()" style="display: none;">
+                                <span class="tooltiptext">Clear</span>
+                            </i>
+                            <i class="actionIcon fa fa-solid fa-rotate-right tooltip" onclick="loadTranslationPolicy()" style="display: none;">
+                                <span class="tooltiptext">Load Default</span>
+                            </i>
+                            <i class="actionIcon fa fa-solid fa-download tooltip" onclick="downloadTranslationPolicy('editTranslationPolicyPopup')" style="display: none;">
+                                <span class="tooltiptext">Download</span>
+                            </i>
+                            <i class="checkmark fa fa-solid fa-check tooltip" onclick="useTranslationPolicy('editTranslationPolicyPopup')" style="display: none;">
+                                <span class="tooltiptext">Use</span>
+                            </i>
+                            <i id="btnViewSystemOutput" class="actionCommandIcon fa fa-solid fa-eye tooltip transparent" onclick="openPopup('systemOutputPopup', viewSystemOutput)">
+                                <span class="tooltiptext">View System Output</span>
+                            </i>
+                            <i class="close fa fa-solid fa-close" onclick="closePopup('editTranslationPolicyPopup')"></i>
+                        </div>
+                    </div>
+                    <div class="popupCentralContainer">
+                        <textarea id="translationPolicy" class="textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nestorPopup" id="translationSettingsPopup">
+                <div class="popupContainer">
+                    <div class="onTopHorizontalContainer">
+                        <div id="translationSettingsLabel" for="translationSettings" class="textarea-label">
+                            Translation Settings
+                        </div>
+                        <div class="actionButtonsHorizontallyEnd">
+                            <i class="checkmark fa fa-solid fa-check tooltip" onclick="useTranslationSettings('translationSettingsPopup')">
+                                <span class="tooltiptext">Use</span>
+                            </i>
+                            <i class="close fa fa-solid fa-close" onclick="closePopup('translationSettingsPopup')"></i>
+                        </div>
+                    </div>
+                    <div class="popupCentralContainer">
+                        <div id="translationSettings" class="textarea"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nestorPopup" id="systemOutputPopup">
+                <div class="popupContainer">
+                    <div class="onTopHorizontalContainer">
+                        <div id="systemOutputLabel" for="systemOutput" class="textarea-label">
+                            System Output
+                        </div>
+                        <div class="actionButtonsHorizontallyEnd">
+                            <i class="close fa fa-solid fa-close" onclick="closePopup('systemOutputPopup')"></i>
+                        </div>
+                    </div>
+                    <div class="popupCentralContainer">
+                        <div id="systemOutput" class="textarea"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.5.6/jsoneditor.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/codemirror.min.js"></script>
+        <script type="text/javascript" src="nestor-codemirror.js"></script>
+        <script type="text/javascript" src="nestor-jsoneditor.js"></script>
+        <script type="text/javascript" src="nestor-webcalls.js"></script>
+        <script type="text/javascript" src="nestor-ui.js"></script>
+
+    </body>
+
+</html>
