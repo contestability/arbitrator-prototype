@@ -1,13 +1,13 @@
 let contestDialogue = [
-    ["Your loan application is rejected.", "S01 :: assume implies reject_loan_application | 0;", "Bank Officer", "A1"],
-    ["Why is my loan application rejected?", "S02 :: assume implies -reject_loan_application | 0;", "Loan Applicant", "A2"],
-    ["Your loan application has been rejected because your care-giving obligations are considered high and your credit score is low.", "S03 :: assume implies caregiving_obligations(high) | 0;\nS05 :: assume implies credit_score(low) | 0;\nJ01 :: caregiving_obligations(high), credit_score(low) implies reject_loan_application | 101;", "Bank Officer", "A3"],
-    ["My loan application should not have been rejected because I am a good existing customer: I own an account for a long time and I make frequent transactions.", "J03 :: good_existing_customer implies -reject_loan_application | 103;\nD01 :: true implies account_owner_for_long | 901;\nD02 :: true implies transaction_frequency(high) | 902;\nJ02 :: account_owner_for_long, transaction_frequency(high) implies good_existing_customer | 102;", "Loan Applicant", "A4"],
-    ["You are not qualified as a good existing customer because your account balance is low for more than one year.", "D03 :: true implies account_balance_low_more_than(1, year) | 903;\nJ04 :: account_balance_low_more_than(1, year) implies -good_existing_customer | 104;", "Bank Officer", "A5"],
-    ["Why is my credit score low?", "S06 :: assume implies -credit_score(low) | 0;", "Loan Applicant", "A6"],
-    ["Your credit score is considered low because it is 582.", "D07 :: true implies credit_score_value(582) | 907;\nJ05 :: credit_score_value(582) implies credit_score(low) | 105;", "Bank Officer", "A7"],
-    ["My credit score is 590.", "C001 :: credit_score_value(582) # credit_score_value(590);\nD08 :: true implies credit_score_value(590) | 908;", "Loan Applicant", "A8"],
-    ["Your credit score is considered low because it is below 600.", "J06 :: credit_score_value(590) implies credit_score_less_than(600) | 106;\nJ07 :: credit_score_less_than(600) implies credit_score(low) | 107;", "Bank Officer", "A9"],
+    ["Your loan application is rejected.", "S01 :: assume implies reject_loan_application | 0;", "Bank Officer", "A01"],
+    ["Why is my loan application rejected?", "S02 :: assume implies -reject_loan_application | 0;", "Loan Applicant", "A02"],
+    ["Your loan application has been rejected because your care-giving obligations are considered high and your credit score is low.", "S03 :: assume implies caregiving_obligations(high) | 0;\nS05 :: assume implies credit_score(low) | 0;\nJ01 :: caregiving_obligations(high), credit_score(low) implies reject_loan_application | 101;", "Bank Officer", "A03"],
+    ["My loan application should not have been rejected because I am a good existing customer: I own an account for a long time and I make frequent transactions.", "J03 :: good_existing_customer implies -reject_loan_application | 103;\nD01 :: true implies account_owner_for_long | 901;\nD02 :: true implies transaction_frequency(high) | 902;\nJ02 :: account_owner_for_long, transaction_frequency(high) implies good_existing_customer | 102;", "Loan Applicant", "A04"],
+    ["You are not qualified as a good existing customer because your account balance is low for more than one year.", "D03 :: true implies account_balance_low_more_than(1, year) | 903;\nJ04 :: account_balance_low_more_than(1, year) implies -good_existing_customer | 104;", "Bank Officer", "A05"],
+    ["Why is my credit score low?", "S06 :: assume implies -credit_score(low) | 0;", "Loan Applicant", "A06"],
+    ["Your credit score is considered low because it is 582.", "C01 :: credit_score_value(582) # credit_score_value(590);\nD07 :: true implies credit_score_value(582) | 907;\nJ05 :: credit_score_value(582) implies credit_score(low) | 105;", "Bank Officer", "A07"],
+    ["My credit score is 590.", "D08 :: true implies credit_score_value(590) | 908;", "Loan Applicant", "A08"],
+    ["Your credit score is considered low because it is below 600.", "J06 :: credit_score_value(590) implies credit_score_less_than(600) | 106;\nJ07 :: credit_score_less_than(600) implies credit_score(low) | 107;", "Bank Officer", "A09"],
     ["Why are my care-giving obligations considered high?", "S04 :: assume implies -caregiving_obligations(high) | 0;", "Loan Applicant", "A10"],
     ["Your care-giving obligations are considered high because you are female and have two children.", "D04 :: true implies gender(female) | 904;\nD05 :: true implies have(child, 2) | 905;\nJ08 :: gender(female) implies female_obligations | 108;\nJ09 :: have(child, 2), female_obligations implies caregiving_obligations(high) | 109;", "Bank Officer", "A11"],
     ["Gender should not be used to determine care-giving obligations.", "D06 :: true implies -female_obligations | 906;", "Loan Applicant", "A12"]
@@ -200,7 +200,7 @@ async function inferConclusion() {
 
 		let resultData = "<Inferences>\n"
 		resultData += responseJSON.inferences.map(obj => obj ? obj.name : '').join(",\n");
-		resultData += "\n\n<Dilemmas>\n";
+		resultData += "\n<Dilemmas>\n";
 		resultData += responseJSON.dilemmas.map(arr => arr.filter(obj => obj).map(obj => obj ? obj.name : '').join(" # ")).join("\n");
 		translationPolicyTextArea.setValue(resultData);
 		setTimeout(function () {
@@ -256,10 +256,10 @@ async function inferConclusionMain() {
 		).join(", ");
 
 
-		resultData += "\n\nDilemmas:\n";
+		resultData += "\nDilemmas:\n";
 		resultData += responseJSON.dilemmas.map(arr => arr.filter(obj => obj).map(obj => obj ? obj.name : '').join(" # ")).join("\n");
 
-		resultData += "\n\nKey Supporting Arguments:\n";
+		resultData += "\nKey Supporting Arguments:\n";
 		conclusionExpressions = extractJustificationNamesFromGraph(responseJSON.graph, true);
 		resultData += conclusionExpressions.join(', ');
 		formalConclusionsTextArea.setValue(resultData);
