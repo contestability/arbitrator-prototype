@@ -44,7 +44,7 @@ CodeMirror.defineMode("prudens", function() {
 		}
   
 		// Handle special predicates
-		if (stream.match(/assume|good_existing_customer|account_owner_for_long|female_obligations/)) {
+		if (stream.match(/suppose|perceive|good_existing_customer|account_owner_for_long|female_obligations/)) {
 			return "predicate";
 		}
   

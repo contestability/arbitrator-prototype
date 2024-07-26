@@ -1,16 +1,16 @@
 let contestDialogue = [
-    ["Your loan application is rejected.", "S01 :: assume implies reject_loan_application | 0;", "Bank Officer", "N01"],
-    ["Why is my loan application rejected?", "S02 :: assume implies -reject_loan_application | 0;", "Loan Applicant", "N02"],
-    ["Your loan application has been rejected because your care-giving obligations are considered high and your credit score is low.", "S03 :: assume implies caregiving_obligations(high) | 0;\nS05 :: assume implies credit_score(low) | 0;\nA01 :: caregiving_obligations(high), credit_score(low) implies reject_loan_application | 101;", "Bank Officer", "N03"],
-    ["My loan application should not have been rejected because I am a good existing customer: I own an account for a long time and I make frequent transactions.", "A03 :: good_existing_customer implies -reject_loan_application | 103;\nP01 :: true implies account_owner_for_long | 901;\nP02 :: true implies transaction_frequency(high) | 902;\nA02 :: account_owner_for_long, transaction_frequency(high) implies good_existing_customer | 102;", "Loan Applicant", "N04"],
-    ["You are not qualified as a good existing customer because your account balance is low for more than one year.", "P03 :: true implies account_balance_low_more_than(1, year) | 903;\nA04 :: account_balance_low_more_than(1, year) implies -good_existing_customer | 104;", "Bank Officer", "N05"],
-    ["Why is my credit score low?", "S06 :: assume implies -credit_score(low) | 0;", "Loan Applicant", "N06"],
-    ["Your credit score is considered low because it is 582.", "C01 :: credit_score_value(582) # credit_score_value(590);\nP07 :: true implies credit_score_value(582) | 907;\nA05 :: credit_score_value(582) implies credit_score(low) | 105;", "Bank Officer", "N07"],
-    ["My credit score is 590.", "P08 :: true implies credit_score_value(590) | 908;", "Loan Applicant", "N08"],
+    ["Your loan application is rejected.", "S01 :: suppose implies reject_loan_application | 0;", "Bank Officer", "N01"],
+    ["Why is my loan application rejected?", "S02 :: suppose implies -reject_loan_application | 0;", "Loan Applicant", "N02"],
+    ["Your loan application has been rejected because your care-giving obligations are considered high and your credit score is low.", "S03 :: suppose implies caregiving_obligations(high) | 0;\nS05 :: suppose implies credit_score(low) | 0;\nA01 :: caregiving_obligations(high), credit_score(low) implies reject_loan_application | 101;", "Bank Officer", "N03"],
+    ["My loan application should not have been rejected because I am a good existing customer: I own an account for a long time and I make frequent transactions.", "A03 :: good_existing_customer implies -reject_loan_application | 103;\nP01 :: perceive implies account_owner_for_long | 901;\nP02 :: perceive implies transaction_frequency(high) | 902;\nA02 :: account_owner_for_long, transaction_frequency(high) implies good_existing_customer | 102;", "Loan Applicant", "N04"],
+    ["You are not qualified as a good existing customer because your account balance is low for more than one year.", "P03 :: perceive implies account_balance_low_more_than(1, year) | 903;\nA04 :: account_balance_low_more_than(1, year) implies -good_existing_customer | 104;", "Bank Officer", "N05"],
+    ["Why is my credit score low?", "S06 :: suppose implies -credit_score(low) | 0;", "Loan Applicant", "N06"],
+    ["Your credit score is considered low because it is 582.", "C01 :: credit_score_value(582) # credit_score_value(590);\nP07 :: perceive implies credit_score_value(582) | 907;\nA05 :: credit_score_value(582) implies credit_score(low) | 105;", "Bank Officer", "N07"],
+    ["My credit score is 590.", "P08 :: perceive implies credit_score_value(590) | 908;", "Loan Applicant", "N08"],
     ["Your credit score is considered low because it is below 600.", "A06 :: credit_score_value(590) implies credit_score_less_than(600) | 106;\nA07 :: credit_score_less_than(600) implies credit_score(low) | 107;", "Bank Officer", "N09"],
-    ["Why are my care-giving obligations considered high?", "S04 :: assume implies -caregiving_obligations(high) | 0;", "Loan Applicant", "N10"],
-    ["Your care-giving obligations are considered high because you are female and have two children.", "P04 :: true implies gender(female) | 904;\nP05 :: true implies have(child, 2) | 905;\nA08 :: gender(female) implies female_obligations | 108;\nA09 :: have(child, 2), female_obligations implies caregiving_obligations(high) | 109;", "Bank Officer", "N11"],
-    ["Gender should not be used to determine care-giving obligations.", "P06 :: true implies -female_obligations | 906;", "Loan Applicant", "N12"]
+    ["Why are my care-giving obligations considered high?", "S04 :: suppose implies -caregiving_obligations(high) | 0;", "Loan Applicant", "N10"],
+    ["Your care-giving obligations are considered high because you are female and have two children.", "P04 :: perceive implies gender(female) | 904;\nP05 :: perceive implies have(child, 2) | 905;\nA08 :: gender(female) implies female_obligations | 108;\nA09 :: have(child, 2), female_obligations implies caregiving_obligations(high) | 109;", "Bank Officer", "N11"],
+    ["Gender should not be used to determine care-giving obligations.", "P06 :: perceive implies -female_obligations | 906;", "Loan Applicant", "N12"]
 ];
 
 let explanations = [
@@ -190,7 +190,7 @@ async function inferConclusion() {
 
 	try {
 
-		lResponseJSON = await prudens_deduce(currentPrudensDialogue.replace(/[\t\n\r]/g, ''), "assume;");
+		lResponseJSON = await prudens_deduce(currentPrudensDialogue.replace(/[\t\n\r]/g, ''), "suppose; perceive;");
 		responseJSON = lResponseJSON;
 
 		if (lResponseJSON.type == 'error')
@@ -236,7 +236,7 @@ async function inferConclusionMain() {
 
 	try {
 
-		lResponseJSON = await prudens_deduce(currentPrudensDialogue.replace(/[\t\n\r]/g, ''), "assume;");
+		lResponseJSON = await prudens_deduce(currentPrudensDialogue.replace(/[\t\n\r]/g, ''), "suppose; perceive;");
 		responseJSON = lResponseJSON;
 		let conclusionExpressions = [];
 
@@ -353,11 +353,11 @@ function extractJustificationNamesFromGraph(graph, excludeContext) {
     let results = [];
     Object.keys(graph).forEach(property => {
         graph[property].forEach(item => {
-            // Check if body exists and does not contain "assume" or "true"
+            // Check if body exists and does not contain "suppose" or "perceive"
             let bodyNames = [];
             if (item.body && Array.isArray(item.body)) {
                 item.body.forEach(bodyItem => {
-                    if (bodyItem.name && bodyItem.name !== "assume" && bodyItem.name !== "true") {
+                    if (bodyItem.name && bodyItem.name !== "suppose" && bodyItem.name !== "perceive") {
                         bodyNames.push(bodyItem.name);
                     }
                 });
@@ -381,11 +381,11 @@ function deepExtractNamesFromGraph(graph, excludeContext) {
     let results = [];
     Object.keys(graph).forEach(property => {
         graph[property].forEach(item => {
-            // Check if body exists and does not contain "assume" or "true"
+            // Check if body exists and does not contain "suppose" or "perceive"
             let bodyNames = [];
             if (item.body && Array.isArray(item.body)) {
                 item.body.forEach(bodyItem => {
-                    if (bodyItem.name && bodyItem.name !== "assume" && bodyItem.name !== "true") {
+                    if (bodyItem.name && bodyItem.name !== "suppose" && bodyItem.name !== "perceive") {
                         bodyNames.push(bodyItem.name);
                     }
                 });
