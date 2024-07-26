@@ -3,7 +3,7 @@ CodeMirror.defineMode("richtext", function() {
 	return {
 	  token: function(stream) {
 
-	  if (stream.match(/Bank Officer:|Loan Applicant:|\(A[0-9]*\)|Suggestion:|Justification:/)) {
+	  if (stream.match(/Bank Officer:|Loan Applicant:|\(N[0-9]*\)|Suggestion:|Justification:/)) {
 			return "strong";
 		}
   
