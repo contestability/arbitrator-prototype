@@ -3,7 +3,7 @@ CodeMirror.defineMode("richtext", function() {
 	return {
 	  token: function(stream) {
 
-	  if (stream.match(/Bank Officer:|Loan Applicant:|\(N[0-9]*\)|Determination:|Justification:/)) {
+	  if (stream.match(/Bank Officer:|Loan Applicant:|\(N[0-9]*\)|\(Nw[0-9]*\)|Determination:|Justification:/)) {
 			return "strong";
 		}
   
@@ -91,14 +91,7 @@ CodeMirror.defineMode("prudens", function() {
 CodeMirror.defineMIME("text/x-prudens", "prudens");
 
 
-var translationPolicyTextArea = CodeMirror.fromTextArea(document.getElementById('translationPolicy'), {
-    mode: "text/x-prudens",
-    lineNumbers: true,
-    lineWrapping: true,
-    theme: "default"
-});
-
-var nlArgumentsTextArea = CodeMirror.fromTextArea(document.getElementById('nlAdvice'), {
+var nlArgumentsTextArea = CodeMirror.fromTextArea(document.getElementById('nlArguments'), {
     mode: "text/x-richtext",
     lineWrapping: true,
     theme: "default",
@@ -120,7 +113,7 @@ var formalConclusionsTextArea = CodeMirror.fromTextArea(document.getElementById(
 	readOnly: true  // Make the editor read-only
 });
 
-var generatedLogicTextarea = CodeMirror.fromTextArea(document.getElementById('generatedLogic'), {
+var prudensFormalDialogueTextarea = CodeMirror.fromTextArea(document.getElementById('prudensFormalDialogue'), {
     mode: "text/x-prudens",
     lineNumbers: true,
     lineWrapping: true,

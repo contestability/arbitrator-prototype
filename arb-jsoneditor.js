@@ -6,8 +6,3 @@ var jsonEditorOptions = {
 };
 
 var systemOutputEditor = new JSONEditor(systemOutputContainer, jsonEditorOptions);
-
-
-var translationSettingsContainer = document.getElementById("translationSettings");
-
-var translationSettingstEditor = new JSONEditor(translationSettingsContainer, jsonEditorOptions);
