@@ -101,7 +101,7 @@ const makeApiCallToChatGPT = async (argumentText, passKey, retries = 3) => {
 
 		// Define the message payload
 		const payload = {
-			model: "gpt-4o",  // or the appropriate model you are using
+			model: "o4-mini",  // or the appropriate model you are using
 			messages: [
 				{ "role": "system", "content": JSON.stringify(contestDialogue) + "\nThe above JSON object contains a 2D table which represents a map between natural language arguments and their formal representation In Prudens. The first column of the table contains the natural language text and the second column contains the Prudens expressions. You should act as a translator of natural language text to Prudens expressions by using the table provided and return the index of the formal expressions mapped to the input natural language text. The index is the number in the last column of each row. If the input natural language text is paraphrased or expressed in a different way, you should match it with the natural language text closer to the meaning of the input text and then return the index of the mapped row. The input natural language text will be given in the prompt and you should return only the index. Do not return any explanations or any other output, just the index. If you cannot match the input text with the natural language text in the table, not matter how hard you try, return -1. Do not be strict: match natural language text with the closest suitable meaning.", },
 				{ "role": "user", "content": argumentText}

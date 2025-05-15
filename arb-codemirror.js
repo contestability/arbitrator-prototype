@@ -21,7 +21,7 @@ CodeMirror.defineMode("prudens", function() {
 	  token: function(stream) {
  
 		// Special Words
-		if (stream.match(/reject_loan_application|\-reject_loan_application/)) {
+		if (stream.match(/rejectLoanApplication|\-rejectLoanApplication|approveLoanApplication/)) {
 			return "function";
 		}
 
@@ -44,7 +44,7 @@ CodeMirror.defineMode("prudens", function() {
 		}
   
 		// Handle special predicates
-		if (stream.match(/suppose|perceive|good_existing_customer|account_owner_for_long|female_obligations/)) {
+		if (stream.match(/suppose|perceive/)) {
 			return "predicate";
 		}
   

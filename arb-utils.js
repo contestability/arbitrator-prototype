@@ -1,7 +1,7 @@
 
 function evaluateLoanApplication(inferences) {
     for (let inference of inferences) {
-        if (inference.name === "reject_loan_application") {
+        if (inference.name === "rejectLoanApplication") {
             if (inference.sign === true) {
                 return -1;
             } else if (inference.sign === false) {
@@ -52,7 +52,7 @@ function extractJustificationNamesFromGraph(graph, excludeContext) {
             if ((item.name && (!excludeContext || !item.name.startsWith('$'))) && bodyNames.length > 0) {
                 results.push(item.name);
             }
-			else if (item.head && item.head.name === "reject_loan_application")
+			else if (item.head && item.head.name === "rejectLoanApplication")
 				results.push(item.name);
         });
     });

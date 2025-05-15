@@ -1,14 +1,98 @@
 {
-    ["Your loan application is rejected.", "S01 :: suppose implies reject_loan_application | 00;", "Bank Officer", "N01"],
-    ["Why is my loan application rejected?", "S02 :: suppose implies -reject_loan_application | 00;", "Loan Applicant", "N02"],
-    ["Your loan application has been rejected because your care-giving obligations are considered high and your credit score is low.", "S03 :: suppose implies caregiving_obligations(high) | 00;\nS05 :: suppose implies credit_score(low) | 00;\nA01 :: caregiving_obligations(high), credit_score(low) implies reject_loan_application | 11;", "Bank Officer", "N03"],
-    ["My loan application should not have been rejected because I am a good existing customer: I own an account for a long time and I make frequent transactions.", "A03 :: good_existing_customer implies -reject_loan_application | 13;\nP01 :: perceive implies account_owner_for_long | 21;\nP02 :: perceive implies transaction_frequency(high) | 22;\nA02 :: account_owner_for_long, transaction_frequency(high) implies good_existing_customer | 12;", "Loan Applicant", "N04"],
-    ["You are not qualified as a good existing customer because your account balance is low for more than one year.", "P03 :: perceive implies account_balance_low_for(1, year) | 23;\nA04 :: account_balance_low_for(1, year) implies -good_existing_customer | 24;", "Bank Officer", "N05"],
-    ["Why is my credit score low?", "S06 :: suppose implies -credit_score(low) | 00;", "Loan Applicant", "N06"],
-    ["Your credit score is considered low because it is 582.", "C01 :: credit_score_value(582) # credit_score_value(590);\nP07 :: perceive implies credit_score_value(582) | 27;\nA05 :: credit_score_value(582) implies credit_score(low) | 15;", "Bank Officer", "N07"],
-    ["My credit score is 590.", "P08 :: perceive implies credit_score_value(590) | 28;", "Loan Applicant", "N08"],
-    ["Your credit score is considered low because it is below 600.", "A06 :: credit_score_value(590) implies credit_score_less_than(600) | 16;\nA07 :: credit_score_less_than(600) implies credit_score(low) | 17;", "Bank Officer", "N09"],
-    ["Why are my care-giving obligations considered high?", "S04 :: suppose implies -caregiving_obligations(high) | 00;", "Loan Applicant", "N10"],
-    ["Your care-giving obligations are considered high because you are female and have two children.", "P04 :: perceive implies gender(female) | 24;\nP05 :: perceive implies have(child, 2) | 25;\nA08 :: gender(female) implies female_obligations | 18;\nA09 :: have(child, 2), female_obligations implies caregiving_obligations(high) | 19;", "Bank Officer", "N11"],
-    ["Gender should not be used to determine care-giving obligations.", "P06 :: perceive implies -female_obligations | 26;", "Loan Applicant", "N12"]
+  [
+    "Your loan application is rejected.",
+    "S001 :: suppose implies rejectLoanApplication(jane_doe) | 0;",
+    "Bank Officer",
+    "N01"
+  ],
+  [
+    "Why is my loan application rejected?",
+    "S002 :: suppose implies -rejectLoanApplication(jane_doe) | 0;",
+    "Loan Applicant",
+    "N02"
+  ],
+  [
+    "Your loan application has been rejected because your care-giving obligations are considered high and your credit efficiency is low.",
+    "S003 :: suppose implies hasHighCareGivingOblications(jane_doe) | 0; S004 :: suppose implies hasLowCreditEfficiency(jane_doe) | 0; IP37 :: hasHighCareGivingOblications(jane_doe), hasLowCreditEfficiency(jane_doe) implies isSubjectToRejection(jane_doe) | 36; IP45 :: isSubjectToRejection(jane_doe) implies rejectLoanApplication(jane_doe) | 44;",
+    "Bank Officer",
+    "N03"
+  ],
+  [
+    "My loan application should not have been rejected because I am supported by qualified guarantor and I am a good existing customer. (: I own an account for a long time and I make frequent transactions.)",
+    "SIP17 :: suppose implies goodExistingCustomer(jane_doe) | 0; P001 :: perceive implies supportedByGuarantor(jane_doe, john_doe) | 101; S005 :: suppose implies qualifiedGuarantor(john_doe) | 0; IP40 :: goodExistingCustomer(jane_doe), supportedByGuarantor(jane_doe, john_doe), qualifiedGuarantor(john_doe) implies -isSubjectToRejection(jane_doe) | 39; S006 :: suppose implies ownsAccountForLong(jane_doe) | 0; S007 :: suppose implies makesFrequentTransactions(jane_doe) | 0; IP17 :: ownsAccountForLong(jane_doe), makesFrequentTransactions(jane_doe) implies goodExistingCustomer(jane_doe) | 17;",
+    "Loan Applicant",
+    "N04"
+  ],
+  [
+    "You are not qualified as a good existing customer because your accounthas a low balance.",
+    "SIP29 :: suppose implies -goodExistingCustomer(jane_doe) | 0; S008 :: suppose implies ownsAccountWithLowBalance(jane_doe) | 0; IP29 :: ownsAccountWithLowBalance(jane_doe) implies -goodExistingCustomer(jane_doe) | 30;",
+    "Bank Officer",
+    "N05"
+  ],
+  [
+    "Why is my credit score efficiency considered low?",
+    "S009 :: suppose implies -hasLowCreditEfficiency(jane_doe) | 0;",
+    "Loan Applicant",
+    "N06"
+  ],
+  [
+    "Your credit efficiency is considered low because your credit score is considered low.",
+    "S010 :: suppose implies hasLowCreditScore(jane_doe) | 0; IP09 :: hasLowCreditScore(jane_doe) implies hasLowCreditEfficiency(jane_doe) | 9;",
+    "Bank Officer",
+    "N07"
+  ],
+  [
+    "Why is my credit score judged as low?",
+    "S011 :: suppose implies -hasLowCreditScore(jane_doe) | 0;",
+    "Loan Applicant",
+    "N08"
+  ],
+  [
+    "Your credit score is marked low because it is 615.",
+    "P002 :: perceive implies hasCreditScore(jane_doe, 615) | 102; IP06a :: hasCreditScore(jane_doe, 615), ?lessThan(615, 630) implies hasLowCreditScore(jane_doe) | 6;",
+    "Bank Officer",
+    "N09"
+  ],
+  [
+    "You are wrong. My credit score is 625.",
+    "C002 :: hasCreditScore(jane_doe, 615) # hasCreditScore(jane_doe, 625); P003 :: perceive implies hasCreditScore(jane_doe, 625) | 103;",
+    "Loan Applicant",
+    "N10"
+  ],
+  [
+    "Still, your credit score is considered low because it is below 630.",
+    "IP06b :: hasCreditScore(jane_doe, 625), ?lessThan(625, 630) implies hasLowCreditScore(jane_doe) | 6;",
+    "Bank Officer",
+    "N11"
+  ],
+  [
+    "Why are my care-giving obligations considered high?",
+    "S012 :: suppose implies -hasHighCareGivingOblications(jane_doe) | 0;",
+    "Loan Applicant",
+    "N12"
+  ],
+  [
+    "Your care-giving obligations are considered high because you are a primary care-giver and have two dependands.",
+    "P004 :: perceive implies hasDependants(jane_doe, 2) | 104; S013 :: suppose implies isPrimaryCareGiver(jane_doe) | 0; IP23 :: hasDependants(jane_doe, 2), ?greaterOrEqualThan(2, 2), isPrimaryCareGiver(jane_doe) implies hasHighCareGivingOblications(jane_doe) | 24;",
+    "Bank Officer",
+    "N13"
+  ],
+  [
+    "Why am I considered primary care-giver?",
+    "S014 :: suppose implies -isPrimaryCareGiver(jane_doe) | 0;",
+    "Loan Applicant",
+    "N14"
+  ],
+  [
+    "You are considered a primary care-giver because you have obligations based on the fact that you are a woman.",
+    "P005 :: perceive implies hasGender(jane_doe, female) | 104; IP21a :: hasGender(jane_doe, female) implies hasGenderObligations(jane_doe, female) | 21; IP21b :: hasGenderObligations(jane_doe, female) implies isPrimaryCareGiver(jane_doe) | 22;",
+    "Bank Officer",
+    "N15"
+  ],
+  [
+    "Gender should not be used to determine care-giving obligations.",
+    "EF04 :: hasGender(jane_doe, female) implies -hasGenderObligations(jane_doe, female) | 204;",
+    "Loan Applicant",
+    "N16"
+  ]
 }
