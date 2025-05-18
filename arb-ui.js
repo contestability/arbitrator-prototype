@@ -16,21 +16,21 @@ let contestDialogue =
   ],
   [
     "Your loan application has been rejected because your care-giving obligations are considered high and your credit efficiency is low.",
-    "S003 :: suppose implies hasHighCareGivingOblications(jane_doe) | 0;\nS004 :: suppose implies hasLowCreditEfficiency(jane_doe) | 0;\nIP37 :: hasHighCareGivingOblications(jane_doe), hasLowCreditEfficiency(jane_doe) implies isSubjectToRejection(jane_doe) | 36;\nIP45 :: isSubjectToRejection(jane_doe) implies rejectLoanApplication(jane_doe) | 44;",
+    "S003 :: suppose implies hasHighCareGivingOblications(jane_doe) | 0;\nS004 :: suppose implies hasLowCreditEfficiency(jane_doe) | 0;\nIP42 :: hasHighCareGivingOblications(jane_doe), hasLowCreditEfficiency(jane_doe) implies hasHighRiskProfile(jane_doe) | 70;\nIP05 :: hasHighRiskProfile(jane_doe) implies rejectLoanApplication(jane_doe) | 20;",
     "Bank Officer",
     "N03",
     2
   ],
   [
     "My loan application should not have been rejected because I am supported by qualified guarantor and I am a good existing customer. (: I own an account for a long time and I make frequent transactions.)",
-    "SIP17 :: suppose implies goodExistingCustomer(jane_doe) | 0;\nP001 :: perceive implies supportedByGuarantor(jane_doe, john_doe) | 101;\nS005 :: suppose implies qualifiedGuarantor(john_doe) | 0;\nIP40 :: goodExistingCustomer(jane_doe), supportedByGuarantor(jane_doe, john_doe), qualifiedGuarantor(john_doe) implies -isSubjectToRejection(jane_doe) | 39;\nS006 :: suppose implies ownsAccountForLong(jane_doe) | 0;\nS007 :: suppose implies makesFrequentTransactions(jane_doe) | 0;\nIP17 :: ownsAccountForLong(jane_doe), makesFrequentTransactions(jane_doe) implies goodExistingCustomer(jane_doe) | 17;",
+    "SIP17 :: suppose implies goodExistingCustomer(jane_doe) | 0;\nP001 :: perceive implies supportedByGuarantor(jane_doe, john_doe) | 101;\nS005 :: suppose implies qualifiedGuarantor(john_doe) | 0;\nIP44 :: goodExistingCustomer(jane_doe), supportedByGuarantor(jane_doe, john_doe), qualifiedGuarantor(john_doe) implies -hasHighRiskProfile(jane_doe) | 70;\nS006 :: suppose implies ownsAccountForLong(jane_doe) | 0;\nS007 :: suppose implies makesFrequentTransactions(jane_doe) | 0;\nIP23 :: ownsAccountForLong(jane_doe), makesFrequentTransactions(jane_doe) implies goodExistingCustomer(jane_doe) | 50;",
     "Loan Applicant",
     "N04",
     3
   ],
   [
-    "You are not qualified as a good existing customer because your accounthas a low balance.",
-    "SIP29 :: suppose implies -goodExistingCustomer(jane_doe) | 0;\nS008 :: suppose implies ownsAccountWithLowBalance(jane_doe) | 0;\nIP29 :: ownsAccountWithLowBalance(jane_doe) implies -goodExistingCustomer(jane_doe) | 30;",
+    "You are not qualified as a good existing customer because your account has a low balance for a long time.",
+    "SIP29 :: suppose implies -goodExistingCustomer(jane_doe) | 0;\nS008 :: suppose implies ownsAccountWithLowBalanceForLong(jane_doe) | 0;\nIP35 :: ownsAccountWithLowBalanceForLong(jane_doe) implies -goodExistingCustomer(jane_doe) | 60;",
     "Bank Officer",
     "N05",
     4
@@ -44,7 +44,7 @@ let contestDialogue =
   ],
   [
     "Your credit efficiency is considered low because your credit score is considered low.",
-    "S010 :: suppose implies hasLowCreditScore(jane_doe) | 0;\nIP09 :: hasLowCreditScore(jane_doe) implies hasLowCreditEfficiency(jane_doe) | 9;",
+    "S010 :: suppose implies hasLowCreditScore(jane_doe) | 0;\nIP15 :: hasLowCreditScore(jane_doe) implies hasLowCreditEfficiency(jane_doe) | 50;",
     "Bank Officer",
     "N07",
     6
@@ -58,7 +58,7 @@ let contestDialogue =
   ],
   [
     "Your credit score is marked low because it is 615.",
-    "P002 :: perceive implies hasCreditScore(jane_doe, 615) | 102;\nIP06a :: hasCreditScore(jane_doe, 615), ?lessThan(615, 630) implies hasLowCreditScore(jane_doe) | 6;",
+    "P002 :: perceive implies hasCreditScore(jane_doe, 615) | 102;\nIP12a :: hasCreditScore(jane_doe, 615), ?lessThan(615, 630) implies hasLowCreditScore(jane_doe) | 50;",
     "Bank Officer",
     "N09",
     8
@@ -72,7 +72,7 @@ let contestDialogue =
   ],
   [
     "Still, your credit score is considered low because it is below 630.",
-    "IP06b :: hasCreditScore(jane_doe, 625), ?lessThan(625, 630) implies hasLowCreditScore(jane_doe) | 6;",
+    "IP12b :: hasCreditScore(jane_doe, 625), ?lessThan(625, 630) implies hasLowCreditScore(jane_doe) | 50;",
     "Bank Officer",
     "N11",
     10
@@ -86,7 +86,7 @@ let contestDialogue =
   ],
   [
     "Your care-giving obligations are considered high because you are a primary care-giver and have two dependands.",
-    "P004 :: perceive implies hasDependants(jane_doe, 2) | 104;\nS013 :: suppose implies isPrimaryCareGiver(jane_doe) | 0;\nIP23 :: hasDependants(jane_doe, 2), ?greaterOrEqualThan(2, 2), isPrimaryCareGiver(jane_doe) implies hasHighCareGivingOblications(jane_doe) | 24;",
+    "P004 :: perceive implies hasDependants(jane_doe, 2) | 104;\nS013 :: suppose implies isPrimaryCareGiver(jane_doe) | 0;\nIP29 :: hasDependants(jane_doe, 2), ?greaterOrEqualThan(2, 2), isPrimaryCareGiver(jane_doe) implies hasHighCareGivingOblications(jane_doe) | 50;",
     "Bank Officer",
     "N13",
     12
@@ -100,14 +100,14 @@ let contestDialogue =
   ],
   [
     "You are considered a primary care-giver because you have obligations based on the fact that you are a woman.",
-    "P005 :: perceive implies hasGender(jane_doe, female) | 104;\nIP21a :: hasGender(jane_doe, female) implies hasGenderObligations(jane_doe, female) | 21;\nIP21b :: hasGenderObligations(jane_doe, female) implies isPrimaryCareGiver(jane_doe) | 22;",
+    "P005 :: perceive implies hasGender(jane_doe, female) | 104;\nIP27 :: hasGender(jane_doe, female) implies genderBasedObligations(jane_doe, female) | 50;\nIP28 :: genderBasedObligations(jane_doe, female) implies isPrimaryCareGiver(jane_doe) | 50;",
     "Bank Officer",
     "N15",
     14
   ],
   [
-    "Gender should not be used to determine care-giving obligations.",
-    "EF04 :: hasGender(jane_doe, female) implies -hasGenderObligations(jane_doe, female) | 204;",
+    "The law forbids the assumption of obligations based on gender.",
+    "EF04 :: hasGender(jane_doe, female) implies -genderBasedObligations(jane_doe, female) | 1000;",
     "Loan Applicant",
     "N16",
     15
@@ -141,14 +141,14 @@ let explanations =
     "Bank Officer"
   ],
   [
-    "Jane Doe's loan application is subject to rejection because she has high care giving oblications and her credit efficiency is low.",
-    "IP37",
-    "isSubjectToRejection(jane_doe)",
+    "Jane Doe has a high risk profile because she has high care giving oblications and her credit efficiency is low.",
+    "IP42",
+    "hasHighRiskProfile(jane_doe)",
     "Bank Officer"
   ],
   [
-    "Jane Doe's loan application should be rejected because it is subject to rejection.",
-    "IP45",
+    "Jane Doe's loan application should be rejected because she has a high risk profile.",
+    "IP05",
     "rejectLoanApplication(jane_doe)",
     "Bank Officer"
   ],
@@ -171,13 +171,13 @@ let explanations =
     "Loan Applicant"
   ],
   [
-    "Jane Doe's loan application is not subject to rejection because she is a good existing customer and she is supported by a qualified guarantor.",
-    "IP40",
-    "-isSubjectToRejection(jane_doe)",
+    "Jane Doe is not considered to have a high risk profile because she is a good existing customer and is supported by a qualified guarantor.",
+    "IP44",
+    "-hasHighRiskProfile(jane_doe)",
     "Loan Applicant"
   ],
   [
-    "Jane Doe has owned an account for a long time.",
+    "Jane Doe owns an account for a long time.",
     "S006",
     "ownsAccountForLong(jane_doe)",
     "Loan Applicant"
@@ -189,8 +189,8 @@ let explanations =
     "Loan Applicant"
   ],
   [
-    "Jane Doe is a good existing customer because she has owned an account for a long time and she makes frequent transactions.",
-    "IP17",
+    "Jane Doe is a good existing customer because she owns an account for a long time and she makes frequent transactions.",
+    "IP23",
     "goodExistingCustomer(jane_doe)",
     "Loan Applicant"
   ],
@@ -207,8 +207,8 @@ let explanations =
     "Bank Officer"
   ],
   [
-    "Jane Doe is not a good existing customer because her account balance is low.",
-    "IP29",
+    "Jane Doe is not a good existing customer because her account balance is low for a long time.",
+    "IP35",
     "-goodExistingCustomer(jane_doe)",
     "Bank Officer"
   ],
@@ -226,7 +226,7 @@ let explanations =
   ],
   [
     "Jane Doe's credit efficiency is considered low because her credit score is low.",
-    "IP09",
+    "IP15",
     "hasLowCreditEfficiency(jane_doe)",
     "Bank Officer"
   ],
@@ -244,7 +244,7 @@ let explanations =
   ],
   [
     "Jane Doe's credit score is considered low because her credit score of 615 is less than 630.",
-    "IP06a",
+    "IP12a",
     "hasLowCreditScore(jane_doe)",
     "Bank Officer"
   ],
@@ -256,7 +256,7 @@ let explanations =
   ],
   [
     "Jane Doe's credit score is considered low because her credit score of 625 is less than 630.",
-    "IP06b",
+    "IP12b",
     "hasLowCreditScore(jane_doe)",
     "Bank Officer"
   ],
@@ -280,7 +280,7 @@ let explanations =
   ],
   [
     "Jane Doe has high care giving oblications because she has 2 dependants or more and she is a primary care giver.",
-    "IP23",
+    "IP29",
     "hasHighCareGivingOblications(jane_doe)",
     "Bank Officer"
   ],
@@ -297,19 +297,19 @@ let explanations =
     "Bank Officer"
   ],
   [
-    "Jane Doe has obligations related to her gender.",
-    "IP21a",
-    "hasGenderObligations(jane_doe, female)",
+    "Jane Doe has obligations as a woman.",
+    "IP27",
+    "genderBasedObligations(jane_doe, female)",
     "Bank Officer"
   ],
   [
-    "Jane Doe is a primary caregiver because she has obligations related to her gender.",
-    "IP21b",
+    "Jane Doe is a primary caregiver because she has obligations as a woman.",
+    "IP28",
     "isPrimaryCareGiver(jane_doe)",
     "Bank Officer"
   ],
   [
-    "Jane Doe's gender should not be used to determine obligations.",
+    "The law forbits the assumption of obligations based on gender.",
     "EF04",
     "-hasGenderObligations(jane_doe, female)",
     "Loan Applicant"
