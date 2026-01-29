@@ -1,0 +1,19 @@
+# Temporary files
+*.tmp
+*.temp
+*~
+.DS_Store
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if added in the future)
+node_modules/
+
+# Build artifacts
+dist/
+build/
+_site/
