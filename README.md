@@ -1,6 +1,6 @@
 # Automated Arbitrator Prototype for Contesting Dialogues
 
-Automated arbitrator is a prototype system for arbitrating contesting dialogues, built on top of Prudens argumentation-based reasoning engine.
+The automated arbitrator is a prototype system for arbitrating contesting dialogues, built on top of Prudens argumentation-based reasoning engine.
 
 ## GitHub Pages Deployment
 
